@@ -154,4 +154,42 @@ __      _____  _ __| | __| || |_| |__ (_)___  (_)___
 Step 5: Signing Up for DockerHub
 In order for you to be able to push your function to the public, you would need a Docker hub account. Please sign up for one at https://hub.docker.com/ if you don’t have one. Make sure you note down your Docker Hub account and the password to be used in the next step.
 
+Note Your Credentials:
+
+Write down your Docker Hub username and password, or use a password manager. You'll need them to log in to Docker Hub from the command line.
+Login from Command Line:
+
+Once you have your Docker Hub account, you will need to log in from your local machine using the Docker CLI. This is usually done with the following command:
+bash
+Copy code
+docker login
+When prompted, enter your Docker Hub username and password.
+Push Your Function's Image:
+
+After logging in, you can push your Docker images to Docker Hub. Typically, you'd build your Docker image with a tag that includes your Docker Hub username, like so:
+bash
+Copy code
+docker build -t <your-dockerhub-username>/<repository-name>:<tag> .
+Then you'd push the image to Docker Hub:
+bash
+Copy code
+docker push <your-dockerhub-username>/<repository-name>:<tag>
+Update Your OpenFaaS Function:
+
+If you're working with OpenFaaS, you'll update your function's definition to use the Docker image from Docker Hub and then deploy it to OpenFaaS.
+Remember, your Docker Hub repository is public by default, meaning anyone can pull and use your Docker images. If you want to keep your images private, you can create a private repository on Docker Hub, but note that the free account has a limit on the number of private repositories you can have.
+
+Keep your credentials secure and ensure that you follow best practices for managing Docker images, such as not including sensitive data in your Docker images and using .dockerignore files to prevent unnecessary files from being added to the image.
+
+(base) NLiangs-MacBook-Pro:tmp a25076$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: abiliang1
+Password: 
+Login Succeeded
+
+Logging in with your password grants your terminal complete access to your account. 
+For better security, log in with a limited-privilege personal access token. Learn more at https://docs.docker.com/go/access-tokens/
+
+
+
 
