@@ -1,11 +1,12 @@
 # ServerlessInfrastructure
-
+```bash
 qemu-system-aarch64 -accel hvf -cpu cortex-a57 -M virt,highmem=off -m 1024 -smp 2  -drive file=/opt/homebrew/Cellar/qemu/8.2.1/share/qemu/edk2-aarch64-code.fd,if=pflash,format=raw,readonly=on  -drive if=none,file=myqcow2image.qcow2,format=qcow2,id=hd0  -device virtio-blk-device,drive=hd0,serial="dummyserial"  -device virtio-net-device,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22 -vga none -device ramfb -device usb-ehci -device usb-kbd -device usb-mouse -usb  -nographic
+```
 
 在 QEMU 初始化命令中，您已经使用该-netdev user,hostfwd=tcp::2222-:22选项为 SSH（端口 22）配置了端口转发。您可以添加类似的选项来转发端口 8080，这是访问 OpenFaaS UI 的默认端口。
 
 
-
+```bash
 qemu-system-aarch64 \
     -accel hvf \
     -cpu cortex-a57 \
@@ -24,26 +25,36 @@ qemu-system-aarch64 \
     -device usb-mouse \
     -usb \
     -nographic
-    
+```
+```bash
 curl -sSL https://cli.openfaas.com | sudo sh
+```
 
 In order to install faasd on your Linux VM, you can simply run the following commands.
+```bash
 $ git clone https://github.com/openfaas/faasd --depth=1 $ cd faasd
+```
+```bash
 # Install faasd
 $ ./hack/install.sh
+```
 
 After the installation, you must obtain your username and password by running
+```bash
 $ sudo cat /var/lib/faasd/secrets/basic-auth-password 
-6ITqc92MCGS1ZTtNMaTdMilOq1NYIQDfO5eZf4alIAD3ULuvyWrmUPpfHGqt2u7abiqemu@abimac:~/faasd$ 
+6ITqc92MCGS1ZTtNMaTdMilOq1NYIQDfO5eZf4alIAD3ULuvyWrmUPpfHGqt2u7abiqemu@abimac:~/faasd$
+```
 
 Username:admin
 password:6ITqc92MCGS1ZTtNMaTdMilOq1NYIQDfO5eZf4alIAD3ULuvyWrmUPpfHGqt2u7
 
+
+``` bash
 $ sudo cat /var/lib/faasd/secrets/basic-auth-user
 adminabiqemu@abimac:~/faasd$ 
-
+```
 You can use this information to log in to the OpenFaaS UI or pass the information to the faas-cli by running the following command. You should be able to use faas-cli after this.
-
+```bash
 sudo systemctl status faasd
 ● faasd.service - faasd
      Loaded: loaded (/lib/systemd/system/faasd.service; enabled; vendor preset:>
@@ -65,8 +76,10 @@ Feb 20 06:06:21 abimac faasd[638]: 2024/02/20 06:06:21 Proxy from: 127.0.0.1:90>
 Feb 20 06:06:21 abimac faasd[638]: 2024/02/20 06:06:21 faasd: waiting for SIGTE>
 Feb 20 06:06:21 abimac faasd[638]: 2024/02/20 06:06:21 Proxy from: 0.0.0.0:8080>
 lines 1-19/19 (END)
-
+```
+```bash
 sudo cat /var/lib/faasd/secrets/basic-auth-password | faas-cli login --username admin --password-stdin
+
 
 abiqemu@abimac:~$ sudo systemctl status faasd-provider
 ● faasd-provider.service - faasd-provider
@@ -84,6 +97,9 @@ Feb 20 06:06:19 abimac faasd[636]: faasd version: 0.18.6        commit: c61efe0>
 Feb 20 06:06:19 abimac faasd[636]: 2024/02/20 06:06:19 Writing network config...
 Feb 20 06:06:19 abimac faasd[636]: 2024/02/20 06:06:19 Listening on: 0.0.0.0:80>
 lines 1-14/14 (END)
+```
+
+```bash
 
 abiqemu@abimac:~$ faas-cli store list
 
@@ -103,9 +119,11 @@ nslookup          openfaas     nslookup
 certinfo          stefanprodan SSL/TLS cert info
 alpine            openfaas     alpine
 cows              openfaas     ASCII Cows
-
+```
+```bash
 # Deploy figlet
 abiqemu@abimac:~$ faas-cli store deploy figlet
+
 
 Deployed. 200 OK.
 URL: http://127.0.0.1:8080/function/figlet
@@ -149,8 +167,9 @@ __      _____  _ __| | __| || |_| |__ (_)___  (_)___
 |  \| | | '_ \ / _` |/ __| '_ \ / _ \ '_ \ 
 | |\  | | | | | (_| | (__| | | |  __/ | | |
 |_| \_|_|_| |_|\__, |\___|_| |_|\___|_| |_|
-               |___/                       
 
+               |___/                       
+```
 Step 5: Signing Up for DockerHub
 In order for you to be able to push your function to the public, you would need a Docker hub account. Please sign up for one at https://hub.docker.com/ if you don’t have one. Make sure you note down your Docker Hub account and the password to be used in the next step.
 
