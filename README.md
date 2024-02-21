@@ -206,8 +206,160 @@ Username: abiliang1
 Password: 
 Login Succeeded
 
+
+
 Logging in with your password grants your terminal complete access to your account. 
 For better security, log in with a limited-privilege personal access token. Learn more at https://docs.docker.com/go/access-tokens/
+
+Create a Base Folder for Functions:
+
+The first command creates a directory for your OpenFaaS functions:
+```bash
+mkdir -p ~/functions && cd ~/functions
+```
+```bash
+abiqemu@abimac:~$ mkdir -p ~/functions && cd ~/functions
+abiqemu@abimac:~/functions$ 
+abiqemu@abimac:~/functions$ ls
+abiqemu@abimac:~/functions$ pwd
+/home/abiqemu/functions
+```
+abiqemu@abimac:~/functions$ 
+
+Initialize New Functions with faas-cli:
+
+The faas-cli new command is used to create a new function with a specified language template. In your case, you're using the Python language template.
+Running these commands will generate boilerplate code for two functions named slack-request and slack-interactive:
+
+```bash
+abiqemu@abimac:~/functions$ faas-cli new --lang python slack-request
+2024/02/20 10:29:07 No templates found in current directory.
+2024/02/20 10:29:07 Attempting to expand templates from https://github.com/openfaas/templates.git
+2024/02/20 10:29:08 Fetched 17 template(s) : [bun csharp dockerfile go java11 java11-vert-x node node14 node16 node17 node18 php7 php8 python python3 python3-debian ruby] from https://github.com/openfaas/templates.git
+Folder: slack-request created.
+  ___                   _____           ____
+ / _ \ _ __   ___ _ __ |  ___|_ _  __ _/ ___|
+| | | | '_ \ / _ \ '_ \| |_ / _` |/ _` \___ \
+| |_| | |_) |  __/ | | |  _| (_| | (_| |___) |
+ \___/| .__/ \___|_| |_|_|  \__,_|\__,_|____/
+      |_|
+
+
+Function created in folder: slack-request
+Stack file written: slack-request.yml
+```
+
+```bash
+abiqemu@abimac:~/functions$ faas-cli new --lang python slack-interactive
+Folder: slack-interactive created.
+  ___                   _____           ____
+ / _ \ _ __   ___ _ __ |  ___|_ _  __ _/ ___|
+| | | | '_ \ / _ \ '_ \| |_ / _` |/ _` \___ \
+| |_| | |_) |  __/ | | |  _| (_| | (_| |___) |
+ \___/| .__/ \___|_| |_|_|  \__,_|\__,_|____/
+      |_|
+
+
+Function created in folder: slack-interactive
+Stack file written: slack-interactive.yml
+```
+
+Update the Generated Code with Skeleton Code:
+
+After running the faas-cli new commands, you'll have two new directories each containing handler.py, a YAML file (which will be named after your functions, such as slack-request.yml and slack-interactive.yml), and a requirements.txt file.
+```bash
+abiqemu@abimac:~/functions$ ls
+slack-interactive      slack-request      template
+slack-interactive.yml  slack-request.yml
+abiqemu@abimac:~/functions$ cd slack-interactive/
+abiqemu@abimac:~/functions/slack-interactive$ ls
+handler.py  requirements.txt
+```
+Replace the contents of handler.py and the YAML files with the skeleton code you've been provided and fill in the blanks as required.
+Make sure to also add any Python dependencies your functions might need into requirements.txt.
+
+Log in to Docker:
+
+Before you can push your Docker images to Docker Hub, you need to log in. This is done using:
+```bash
+
+docker login
+```
+Enter your Docker Hub username and password when prompted.
+Build, Push, and Deploy Functions:
+
+Use faas-cli build to build Docker images for your functions based on the YAML files.
+Use faas-cli push to push the built images to Docker Hub.
+Use faas-cli deploy to deploy your functions to your OpenFaaS cluster.
+The commands are as follows:
+```bash
+
+faas-cli build -f ./slack-interactive.yml
+faas-cli push -f ./slack-interactive.yml
+faas-cli deploy -f ./slack-interactive.yml
+
+faas-cli build -f ./slack-request.yml
+faas-cli push -f ./slack-request.yml
+faas-cli deploy -f ./slack-request.yml
+```
+It's important that your YAML files contain the correct Docker image names, which should follow the format <your-dockerhub-username>/<repository-name>:<tag>.
+Note: You might need to run some of these commands with sudo, depending on your setup.
+
+After these steps, your functions should be built, pushed to Docker Hub, and deployed to OpenFaaS, making them callable via the gateway. Remember to test your functions to make sure they work as expected before considering the deployment complete.
+
+Creating a chatbot as a serverless function involves setting up a function that can receive input, process it according to specific rules, and return a response. Here's how you could approach writing a chatbot function with the requirements you've described:
+
+Set up the Function: Similar to Step 6, use the faas-cli new command to create a new function template. You might want to use a Python template if you're comfortable with Python, or choose another supported language you're familiar with.
+
+Implement the Logic:
+
+User Input: Your function should be designed to accept a string as user input.
+Response Logic: Write logic within your handler function to handle different types of questions:
+Name: If the input matches questions about the chatbot's name, return one of three predetermined responses.
+Current Date and Time: If the input is about the current date or time, use a library or the language's built-in functionality to get the current date and time and return it in the response.
+Figlet Generation: If the input is a request to generate a figlet, your function should call the previously deployed figlet function and return its output.
+Here's a high-level example in Python for the chatbot function logic (to be put in handler.py):
+
+```python
+import datetime
+import subprocess
+
+def handle(req):
+    # Case for asking the bot's name
+    if "name" in req.lower():
+        return "My name is Chatbot. You can call me 'Bot' or simply 'Chatbot'."
+
+    # Case for asking the current time
+    elif "current time" in req.lower() or "date" in req.lower():
+        now = datetime.datetime.now()
+        return f"The current time is {now.strftime('%H:%M:%S')} and today's date is {now.strftime('%Y-%m-%d')}."
+
+    # Case for generating a figlet
+    elif req.lower().startswith("generate a figlet for"):
+        figlet_text = req[len("generate a figlet for"):].strip()
+        # Invoke the figlet function using faas-cli
+        result = subprocess.run(["faas-cli", "invoke", "figlet"], input=figlet_text, capture_output=True, text=True)
+        return result.stdout
+
+    # Default case if none of the above questions are asked
+    else:
+        return "I am not sure how to answer that. Can you ask something else?"
+
+# Replace subprocess.run(...) with the appropriate way to invoke another function in your environment
+```
+
+Handle Dependencies:
+
+Make sure to include any dependencies in the requirements.txt if you are using Python or the equivalent for other languages.
+Deploy the Function:
+
+Use faas-cli build, faas-cli push, and faas-cli deploy commands to build, push, and deploy your chatbot function.
+Test Your Function:
+
+Ensure that you test your function extensively. You can do this by invoking the function with different inputs to see if you get the expected outputs.
+Once you have completed the implementation and deployment, you will be ready to answer questions about how you designed and implemented the chatbot, its capabilities, and any challenges you faced.
+
+
 
 
 
