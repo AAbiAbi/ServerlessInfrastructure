@@ -1,0 +1,25 @@
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+  network: func_functions
+
+functions:
+  slack-interactive:
+      lang: python3
+      handler: ./slack_interactive
+      image: abiliang1/slack_interactive:latest
+      build_args:
+        DOCKERFILE: .slack_interactive/dockerfile # Path to your custom Dockerfile
+
+# Path: slack_interactive/dockerfile
+  slack-request:
+      lang: python3
+      handler: ./slack_request
+      image: abiliang1/slack_request:latest
+  
+  # figlet:
+  #   # skip_build: true
+  #   image:  ghcr.io/openfaas/figlet:latest
+  #   fprocess: figlet
+
+
