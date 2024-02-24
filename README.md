@@ -760,3 +760,27 @@ Status code distribution:
 ```
 This command sends 100 requests (-n 100) to your function with a concurrency level of 10 (-c 10).
 
+## Git Commit ID
+
+```bash
+biqemu@abimac:~/functions$ git log
+commit 08810e36ce70633e2a61984a83772ed9de2e90f2 (HEAD -> master, origin/master)
+Author: abi <ningchenliang98@gmail.com>
+Date:   Sat Feb 24 08:37:19 2024 +0000
+
+    Initial commit
+
+commit da3951c4e0766e6ddb57fa1072b2ff347e8a70c0 (origin/main)
+Author: Abigail Liang <103874591+AAbiAbi@users.noreply.github.com>
+Date:   Tue Feb 20 17:15:32 2024 -0800
+
+    Update README.md
+
+commit c29ddb56032eea3f8a70e15e7fca08c683923387
+Author: Abigail Liang <103874591+AAbiAbi@users.noreply.github.com>
+Date:   Tue Feb 20 02:16:37 2024 -0800
+
+    Update README.md
+
+commit aa2726be7822c93a025d1805e62c5515971b3630
+```
