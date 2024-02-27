@@ -8,12 +8,13 @@ def handle(req):
     response_type = "unknown"  # Default response type
     
     # Determine the type of question
-    if "name" in req_lower:
-        response_type = "name"
-    elif "current time" in req_lower or "date" in req_lower or "time" in req_lower:
+    
+    if "current time" in req_lower or "date" in req_lower or "time" in req_lower:
         response_type = "time"
     elif req_lower.startswith("generate a figlet for"):
         response_type = "figlet"
+    elif "name" in req_lower:
+        response_type = "name"
     
     # Construct a response with the request type
     response = {"request_type": response_type, "original_request": req}

@@ -760,6 +760,61 @@ Status code distribution:
 ```
 This command sends 100 requests (-n 100) to your function with a concurrency level of 10 (-c 10).
 
+The replica becomes 2, when hey -n 1000 -c 500 http://127.0.0.1:8080/function/slack-request
+```bash
+abiqemu@abimac:~$ faas-cli list
+Function                      	Invocations    	Replicas
+figlet                        	1000              	2    
+slack-interactive             	5              	1    
+slack-request                 	4              	1    
+```
+
+## Extre Credit
+
+First, I set up and deploy the faas on my awe ec2 vm
+![This represents the configuration is good.](pics/ec2.png)
+
+To open a public port, modify the security group and save the router rules for ipv4 in linux.
+![This represents the configuration is good.](pics/sg.png)
+
+
+Try to access the public ip address using the command:
+```sh
+(base) NLiangs-MacBook-Pro:~ a25076$ curl http://18.225.37.130:8080/function/slack-request -d "what is your name?"
+My name is ChatBot.
+
+(base) NLiangs-MacBook-Pro:~ a25076$ curl http://18.225.37.130:8080/function/slack-request -d "what is your time?"
+The date today is 2024-02-27.
+
+(base) NLiangs-MacBook-Pro:~ a25076$ curl http://18.225.37.130:8080/function/slack-request -d "generate a figlet for test"
+ _            _   
+| |_ ___  ___| |_ 
+| __/ _ \/ __| __|
+| ||  __/\__ \ |_ 
+ \__\___||___/\__|
+                  
+```
+
+
+Head over to https://api.slack.com/apps and create a new app
+Create a incoming webhook
+![This represents the configuration is good.](pics/webhood.png)
+
+![This represents the configuration is good.](pics/slashCommand.png)
+
+Access the chatbox in SCU Grad Enigineer workspace and #chatboxabi chanel.
+
+
+![This represents the configuration is good.](pics/slack1.png)
+
+![This represents the configuration is good.](pics/slack2.png)
+
+![This represents the configuration is good.](pics/slack3.png)
+
+Call /csen241abi to talk with the slack-request function.
+
+Call /csen241interactive to talk with slack-interactive funxtion.
+
 ## Git Commit ID
 
 ```bash
