@@ -802,8 +802,10 @@ Create a incoming webhook
 
 ![This represents the configuration is good.](pics/slashCommand.png)
 
-Access the chatbox in SCU Grad Enigineer workspace and #chatboxabi chanel.
+Access the chatbox in SCU Grad Enigineer workspace and #chatboxabi channel.
+Channel ID :C06LPGGDPB7
 
+URL:[https://app.slack.com/huddle/T03QJD2DLH0/C06LPGGDPB7](https://scugradengineering.slack.com/archives/C06LPGGDPB7)
 
 ![This represents the configuration is good.](pics/slack1.png)
 
